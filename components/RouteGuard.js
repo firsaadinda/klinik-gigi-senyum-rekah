@@ -54,17 +54,17 @@ function RouteGuardContent({ allowedRoles = [], children }) {
   if (userData.aktif === false) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-[#F4F7F9]">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-amber-200 p-8 text-center">
-          <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle className="w-7 h-7" />
+        <div className="max-w-md w-full bg-white rounded-lg shadow-sm border border-amber-200 p-7 text-center">
+          <div className="w-12 h-12 bg-amber-50 text-amber-700 border border-amber-200 rounded-md flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-bold text-slate-800 mb-2">Akun Dinonaktifkan</h2>
-          <p className="text-slate-600 text-sm leading-relaxed mb-6">
+          <h2 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Akun Dinonaktifkan</h2>
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
             Akun Anda dinonaktifkan. Hubungi klinik jika Anda merasa ini adalah kekeliruan.
           </p>
           <button
             onClick={() => window.location.href = "/masuk"}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition"
+            className="px-4 py-2 rounded-md bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition"
           >
             Keluar & Kembali
           </button>

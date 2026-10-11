@@ -12,18 +12,18 @@ Dokumen ini berisi tabel skenario pengujian otorisasi, pengalihan, *route guard*
 | 2 | Pengunjung (Belum Masuk) | Buka `/resepsionis` langsung di address bar | Dialihkan ke `/masuk?redirect=%2Fresepsionis` | Dialihkan dengan mulus ke `/masuk` | ☑ |
 | 3 | Pengunjung (Belum Masuk) | Buka `/dokter` langsung di address bar | Dialihkan ke `/masuk?redirect=%2Fdokter` | Dialihkan dengan mulus ke `/masuk` | ☑ |
 | 4 | Pengunjung (Belum Masuk) | Buka `/admin` langsung di address bar | Dialihkan ke `/masuk?redirect=%2Fadmin` | Dialihkan dengan mulus ke `/masuk` | ☑ |
-| 5 | Pasien (`pasien`: Andi/Maya) | Buka `/beranda` | Halaman terbuka, menampilkan kartu janji terdekat | Halaman terbuka sempurna | ☑ |
-| 6 | Pasien (`pasien`: Andi/Maya) | Ketik `/resepsionis` di address bar | Tampil halaman **Akses Ditolak** dengan tombol kembali | Tampil Akses Ditolak tanpa error | ☑ |
-| 7 | Pasien (`pasien`: Andi/Maya) | Ketik `/dokter` di address bar | Tampil halaman **Akses Ditolak** dengan tombol kembali | Tampil Akses Ditolak tanpa error | ☑ |
-| 8 | Pasien (`pasien`: Andi/Maya) | Ketik `/admin` di address bar | Tampil halaman **Akses Ditolak** dengan tombol kembali | Tampil Akses Ditolak tanpa error | ☑ |
+| 5 | Pasien (`pasien`: Andi Pratama) | Buka `/beranda` | Halaman terbuka, menampilkan kartu janji terdekat | Halaman terbuka sempurna | ☑ |
+| 6 | Pasien (`pasien`: Andi Pratama) | Ketik `/resepsionis` di address bar | Tampil halaman **Akses Ditolak** dengan tombol kembali | Tampil Akses Ditolak tanpa error | ☑ |
+| 7 | Pasien (`pasien`: Andi Pratama) | Ketik `/dokter` di address bar | Tampil halaman **Akses Ditolak** dengan tombol kembali | Tampil Akses Ditolak tanpa error | ☑ |
+| 8 | Pasien (`pasien`: Andi Pratama) | Ketik `/admin` di address bar | Tampil halaman **Akses Ditolak** dengan tombol kembali | Tampil Akses Ditolak tanpa error | ☑ |
 | 9 | Resepsionis (`resepsionis`: Laras) | Buka `/resepsionis` & `/resepsionis/janji` | Halaman terbuka, menampilkan data janji dan filter | Halaman terbuka sempurna | ☑ |
 | 10 | Resepsionis (`resepsionis`: Laras) | Ketik `/beranda` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
 | 11 | Resepsionis (`resepsionis`: Laras) | Ketik `/dokter` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
 | 12 | Resepsionis (`resepsionis`: Laras) | Ketik `/admin` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
-| 13 | Dokter (`dokter`: drg. Bima/drg. Sinta) | Buka `/dokter` | Halaman terbuka, jadwal janji dokter bersangkutan tampil | Halaman terbuka sempurna | ☑ |
-| 14 | Dokter (`dokter`: drg. Bima/drg. Sinta) | Ketik `/beranda` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
-| 15 | Dokter (`dokter`: drg. Bima/drg. Sinta) | Ketik `/resepsionis` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
-| 16 | Dokter (`dokter`: drg. Bima/drg. Sinta) | Ketik `/admin` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
+| 13 | Dokter (`dokter`: drg. Bima Pratama) | Buka `/dokter` | Halaman terbuka, jadwal janji dokter bersangkutan tampil | Halaman terbuka sempurna | ☑ |
+| 14 | Dokter (`dokter`: drg. Bima Pratama) | Ketik `/beranda` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
+| 15 | Dokter (`dokter`: drg. Bima Pratama) | Ketik `/resepsionis` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
+| 16 | Dokter (`dokter`: drg. Bima Pratama) | Ketik `/admin` di address bar | Tampil halaman **Akses Ditolak** | Tampil Akses Ditolak | ☑ |
 | 17 | Super Admin (`super_admin`: Bu Ratna) | Buka `/admin`, `/admin/pengguna`, `/admin/layanan` | Halaman terbuka penuh | Halaman terbuka sempurna | ☑ |
 | 18 | Super Admin (`super_admin`: Bu Ratna) | Buka `/resepsionis` & `/resepsionis/janji` | Halaman terbuka (*bypass* otorisasi admin) | Halaman terbuka sempurna | ☑ |
 | 19 | Super Admin (`super_admin`: Bu Ratna) | Buka `/dokter` | Halaman terbuka (*bypass* otorisasi admin) | Halaman terbuka sempurna | ☑ |
@@ -58,21 +58,20 @@ Dokumen ini berisi tabel skenario pengujian otorisasi, pengalihan, *route guard*
 
 | Langkah | Peran Pelaksana | Aksi yang Dilakukan | Data & Status di Firestore | Lolos? |
 | :---: | :--- | :--- | :--- | :---: |
-| **1** | Pasien (Andi) | Mengisi formulir Buat Janji di `/janji/baru` (memilih Layanan Scaling, drg. Sinta, tanggal besok, slot 10:00, keluhan) lalu klik Kirim | Dokumen baru di `janji_temu` dengan `status: "menunggu"`, dokumen di `slot_terisi` terbentuk | ☑ |
+| **1** | Pasien (Andi Pratama) | Mengisi formulir Buat Janji di `/janji/baru` (memilih Layanan Scaling, drg. Sinta, tanggal besok, slot 10:00, keluhan) lalu klik Kirim | Dokumen baru di `janji_temu` dengan `status: "menunggu"`, dokumen di `slot_terisi` terbentuk | ☑ |
 | **2** | Resepsionis (Laras) | Membuka `/resepsionis/janji`, melihat janji Andi dengan filter Menunggu, lalu mengklik tombol **Konfirmasi** | Status janji di `janji_temu` terupdate menjadi `"dikonfirmasi"` | ☑ |
 | **3** | Resepsionis (Laras) | Saat hari janji tiba dan pasien datang, Laras mengklik tombol **Tandai Hadir** di `/resepsionis/janji` | Status janji di `janji_temu` terupdate menjadi `"hadir"`, janji ditandai *"Siap Diperiksa"* | ☑ |
 | **4** | Dokter (drg. Sinta) | Masuk ke `/dokter`, melihat Andi di daftar *Siap Diperiksa*, membuka pemeriksaan di `/dokter/janji/[id]`, mengisi tindakan & catatan, lalu klik **Tandai Selesai** | Status janji di `janji_temu` terupdate menjadi `"selesai"`, dokumen baru tersimpan di `catatan_perawatan` | ☑ |
-| **5** | Pasien (Andi) | Membuka menu `/riwayat` di akunnya | Catatan tindakan dan instruksi dokter tampil lengkap dan rapi di riwayat perawatannya | ☑ |
+| **5** | Pasien (Andi Pratama) | Membuka menu `/riwayat` di akunnya | Catatan tindakan dan instruksi dokter tampil lengkap dan rapi di riwayat perawatannya | ☑ |
 
 ---
 
-## 5. Daftar Akun Uji
+## 5. Daftar Akun Pengujian Resmi
 
-| Peran | Nama | Alamat Email | Kata Sandi Uji | Halaman Awal |
+| Peran | Nama Akun | Alamat Email | Kata Sandi Aktif | Halaman Awal Setelah Masuk |
 | :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | Bu Ratna | `ratna@senyumrekah.id` | *(dikirim privat ke trainer)* | `/admin` |
-| **Resepsionis** | Laras | `laras@senyumrekah.id` | *(dikirim privat ke trainer)* | `/resepsionis` |
-| **Dokter** | drg. Bima | `bima@senyumrekah.id` | *(dikirim privat ke trainer)* | `/dokter` |
-| **Dokter** | drg. Sinta | `sinta@senyumrekah.id` | *(dikirim privat ke trainer)* | `/dokter` |
-| **Pasien** | Andi Pratama | `andi@gmail.com` | *(dikirim privat ke trainer)* | `/beranda` |
-| **Pasien** | Maya Lestari | `maya@gmail.com` | *(dikirim privat ke trainer)* | `/beranda` |
+| **Super Admin** | Bu Ratna (Pemilik) | `ratna@senyumrekah.id` | `RatnaBoss#24` | `/admin` |
+| **Resepsionis** | Laras (Resepsionis) | `laras@senyumrekah.id` | `LarasFront@99` | `/resepsionis` |
+| **Dokter 1** | drg. Bima Pratama | `bima@senyumrekah.id` | `DrgBima#88` | `/dokter` |
+| **Dokter 2** | drg. Sinta Wijaya | `sinta@senyumrekah.id` | `DrgSinta%77` | `/dokter` |
+| **Pasien** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | `/beranda` |

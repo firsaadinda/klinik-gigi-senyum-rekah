@@ -123,7 +123,13 @@ export default function KelolaLayananPage() {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Katalog Layanan Klinik</h1>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50/80 px-2.5 py-0.5 rounded-full border border-purple-200/60">
+                  Panel Pemilik Klinik
+                </span>
+                <span className="text-xs text-slate-400">• Paket Perawatan</span>
+              </div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Katalog Layanan Klinik</h1>
               <p className="text-xs text-slate-500 mt-1">
                 Kelola paket tindakan gigi, durasi estimasi (kelipatan 30 menit), dan tarif harga (PRD 4.14).
               </p>
@@ -133,7 +139,7 @@ export default function KelolaLayananPage() {
                 setFormError("");
                 setShowModal(true);
               }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0E7490] text-white text-xs font-semibold hover:bg-[#155E75] shadow-sm shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E7490] text-white text-xs font-bold hover:bg-[#155E75] shadow-xs hover:shadow shrink-0 transition"
             >
               <PlusCircle className="w-4 h-4" />
               Tambah Layanan Baru
@@ -141,37 +147,37 @@ export default function KelolaLayananPage() {
           </div>
 
           {loading ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-14 text-center text-slate-500 shadow-xs">
               <Loader2 className="w-8 h-8 text-[#0E7490] animate-spin mx-auto mb-2" />
-              <p className="text-sm">Memuat daftar layanan...</p>
+              <p className="text-sm font-medium">Memuat daftar layanan...</p>
             </div>
           ) : error ? (
-            <div className="p-6 bg-red-50 text-red-600 rounded-xl text-center text-xs">
+            <div className="p-4 bg-red-50/80 text-red-600 rounded-2xl border border-red-200 text-center text-xs">
               <p>{error}</p>
             </div>
           ) : layananList.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-14 text-center text-slate-500 shadow-xs">
               <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-40 text-slate-500" />
-              <p className="font-semibold text-slate-700">Belum ada katalog layanan</p>
-              <p className="text-xs text-slate-400 mt-1">Klik tombol Tambah Layanan Baru di atas.</p>
+              <p className="font-bold text-slate-800">Belum ada katalog layanan</p>
+              <p className="text-xs text-slate-500 mt-1">Klik tombol Tambah Layanan Baru di atas.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
-                      <th className="py-3 px-4">Nama Layanan</th>
-                      <th className="py-3 px-4">Durasi Estimasi</th>
-                      <th className="py-3 px-4">Tarif Harga (Rp)</th>
-                      <th className="py-3 px-4 text-center">Status</th>
-                      <th className="py-3 px-4 text-right">Aksi</th>
+                    <tr className="bg-slate-50/80 border-b border-slate-200/80 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                      <th className="py-3.5 px-4">Nama Layanan</th>
+                      <th className="py-3.5 px-4">Durasi Estimasi</th>
+                      <th className="py-3.5 px-4">Tarif Harga (Rp)</th>
+                      <th className="py-3.5 px-4 text-center">Status</th>
+                      <th className="py-3.5 px-4 text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {layananList.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50/60 transition">
-                        <td className="py-3.5 px-4 font-bold text-slate-800">
+                      <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="py-3.5 px-4 font-bold text-slate-900">
                           {item.nama}
                         </td>
 
@@ -182,17 +188,17 @@ export default function KelolaLayananPage() {
                           </span>
                         </td>
 
-                        <td className="py-3.5 px-4 font-bold text-slate-800 tabular-nums">
+                        <td className="py-3.5 px-4 font-bold text-slate-900 tabular-nums">
                           Rp {Number(item.harga || 0).toLocaleString("id-ID")}
                         </td>
 
                         <td className="py-3.5 px-4 text-center">
                           {item.aktif ? (
-                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
                               Aktif
                             </span>
                           ) : (
-                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/80">
                               Nonaktif
                             </span>
                           )}
@@ -201,10 +207,10 @@ export default function KelolaLayananPage() {
                         <td className="py-3.5 px-4 text-right">
                           <button
                             onClick={() => handleToggleAktif(item)}
-                            className={`px-3 py-1 rounded-lg text-[11px] font-semibold transition ${
+                            className={`px-3.5 py-1 rounded-full text-[11px] font-bold border transition ${
                               item.aktif
-                                ? "bg-amber-50 text-amber-700 hover:bg-amber-100"
-                                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                ? "bg-white border-amber-300 text-amber-800 hover:bg-amber-50"
+                                : "bg-white border-emerald-300 text-emerald-800 hover:bg-emerald-50"
                             }`}
                           >
                             {item.aktif ? "Nonaktifkan" : "Aktifkan"}
@@ -218,19 +224,19 @@ export default function KelolaLayananPage() {
             </div>
           )}
 
-          {/* Modal Tambah Layanan */}
+          {/* Modal Tambah Layanan (Mediora Style) */}
           {showModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-              <div className="bg-white rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200 space-y-4">
+              <div className="bg-white rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-xl border border-slate-200/80 space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <ClipboardList className="w-5 h-5 text-[#0E7490]" />
+                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <ClipboardList className="w-4 h-4 text-[#0E7490]" />
                     Tambah Layanan Klinik Baru
                   </h3>
                 </div>
 
                 {formError && (
-                  <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl text-xs flex items-center gap-2">
+                  <div className="p-3.5 bg-red-50/80 text-red-700 border border-red-200 rounded-xl text-xs flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span>{formError}</span>
                   </div>
@@ -238,7 +244,7 @@ export default function KelolaLayananPage() {
 
                 <form onSubmit={handleAddSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
                       Nama Layanan <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -247,18 +253,18 @@ export default function KelolaLayananPage() {
                       value={nama}
                       onChange={(e) => setNama(e.target.value)}
                       placeholder="Contoh: Cabut Gigi Geraham Bungsu"
-                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none"
+                      className="w-full px-3.5 py-2.5 text-xs bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-[#0E7490] focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
                       Durasi (Menit - Kelipatan 30) <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={durasiMenit}
                       onChange={(e) => setDurasiMenit(Number(e.target.value))}
-                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none"
+                      className="w-full px-3.5 py-2.5 text-xs bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-[#0E7490] focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                     >
                       <option value={30}>30 Menit</option>
                       <option value={60}>60 Menit (1 Jam)</option>
@@ -268,7 +274,7 @@ export default function KelolaLayananPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
                       Tarif Harga (Rupiah) <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -279,11 +285,11 @@ export default function KelolaLayananPage() {
                       value={harga}
                       onChange={(e) => setHarga(e.target.value)}
                       placeholder="Contoh: 250000"
-                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none tabular-nums"
+                      className="w-full px-3.5 py-2.5 text-xs bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-[#0E7490] focus:ring-2 focus:ring-cyan-500/20 focus:outline-none tabular-nums"
                     />
                   </div>
 
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="flex items-center gap-2.5 pt-1">
                     <input
                       type="checkbox"
                       id="layananAktifCheck"
@@ -291,23 +297,23 @@ export default function KelolaLayananPage() {
                       onChange={(e) => setAktif(e.target.checked)}
                       className="rounded text-[#0E7490]"
                     />
-                    <label htmlFor="layananAktifCheck" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                    <label htmlFor="layananAktifCheck" className="text-xs font-medium text-slate-700 cursor-pointer">
                       Langsung Aktifkan untuk Pemesanan Janji Temu Pasien
                     </label>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
                     <button
                       type="button"
                       onClick={() => setShowModal(false)}
-                      className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                      className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-full transition"
                     >
                       Batal
                     </button>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="px-5 py-2 text-xs font-semibold text-white bg-[#0E7490] hover:bg-[#155E75] rounded-xl disabled:opacity-50 transition"
+                      className="px-5 py-2 text-xs font-bold text-white bg-[#0E7490] hover:bg-[#155E75] rounded-full disabled:opacity-50 shadow-xs transition"
                     >
                       {submitting ? "Menyimpan..." : "Simpan Layanan"}
                     </button>

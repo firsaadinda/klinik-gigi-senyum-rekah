@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import Logo from "@/components/Logo";
 import {
   Calendar,
-  Clock,
   FileText,
   User,
   Users,
@@ -19,9 +19,8 @@ import {
   Menu,
   X,
   PlusCircle,
-  ShieldCheck,
-  ChevronRight,
-  Smile,
+  Shield,
+  Activity,
 } from "lucide-react";
 
 export default function AppLayout({ children }) {
@@ -40,147 +39,189 @@ export default function AppLayout({ children }) {
   };
 
   const getRoleBadge = (role) => {
-    switch (role) {
-      case "super_admin":
-        return <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-amber-300">Super Admin</span>;
-      case "dokter":
-        return <span className="bg-purple-100 text-purple-800 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-purple-300">Dokter</span>;
-      case "resepsionis":
-        return <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-blue-300">Resepsionis</span>;
-      default:
-        return <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-emerald-300">Pasien</span>;
-    }
+    const styles = {
+      super_admin: { bg: "bg-amber-50", text: "text-amber-800", dot: "bg-amber-500", border: "border-amber-200/80", label: "Super Admin" },
+      dokter: { bg: "bg-cyan-50", text: "text-cyan-800", dot: "bg-cyan-500", border: "border-cyan-200/80", label: "Dokter Gigi" },
+      resepsionis: { bg: "bg-sky-50", text: "text-sky-800", dot: "bg-sky-500", border: "border-sky-200/80", label: "Resepsionis" },
+    };
+    const s = styles[role] || { bg: "bg-emerald-50", text: "text-emerald-800", dot: "bg-emerald-500", border: "border-emerald-200/80", label: "Pasien" };
+    return (
+      <span className={`inline-flex items-center gap-1.5 ${s.bg} ${s.text} text-[11px] px-2.5 py-0.5 rounded-full font-bold border ${s.border}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+        {s.label}
+      </span>
+    );
   };
 
   const role = userData?.role || "pasien";
   const isSuperAdmin = role === "super_admin";
+  const navSections = [];
 
-  const navItems = [];
-
-  // Menu Pasien
   if (role === "pasien" || isSuperAdmin) {
-    navItems.push({
-      category: isSuperAdmin ? "Area Pasien" : "Menu Utama",
-      items: [
-        { label: "Beranda", href: "/beranda", icon: LayoutDashboard },
-        { label: "Daftar Janji", href: "/janji", icon: Calendar },
+    navSections.push({
+      title: isSuperAdmin ? "Area Pasien" : "Pelayanan Pasien",
+      links: [
+        { label: "Beranda Pasien", href: "/beranda", icon: LayoutDashboard },
+        { label: "Daftar Janji Saya", href: "/janji", icon: Calendar },
         { label: "Buat Janji Baru", href: "/janji/baru", icon: PlusCircle },
         { label: "Riwayat Perawatan", href: "/riwayat", icon: FileText },
       ],
     });
   }
 
-  // Menu Resepsionis
   if (role === "resepsionis" || isSuperAdmin) {
-    navItems.push({
-      category: isSuperAdmin ? "Area Resepsionis" : "Menu Utama",
-      items: [
-        { label: "Dasbor Resepsionis", href: "/resepsionis", icon: LayoutDashboard },
-        { label: "Kelola Janji", href: "/resepsionis/janji", icon: ClipboardList },
-        { label: "Data Pasien", href: "/resepsionis/pasien", icon: Users },
+    navSections.push({
+      title: isSuperAdmin ? "Meja Depan" : "Operasional Resepsionis",
+      links: [
+        { label: "Dasbor Resepsionis", href: "/resepsionis", icon: Activity },
+        { label: "Kelola Janji Temu", href: "/resepsionis/janji", icon: ClipboardList },
+        { label: "Buku Kontak Pasien", href: "/resepsionis/pasien", icon: Users },
       ],
     });
   }
 
-  // Menu Dokter
   if (role === "dokter" || isSuperAdmin) {
-    navItems.push({
-      category: isSuperAdmin ? "Area Dokter" : "Menu Utama",
-      items: [
+    navSections.push({
+      title: isSuperAdmin ? "Ruang Dokter" : "Praktik Medis",
+      links: [
         { label: "Dasbor Dokter", href: "/dokter", icon: Stethoscope },
       ],
     });
   }
 
-  // Menu Super Admin
   if (isSuperAdmin) {
-    navItems.push({
-      category: "Administrasi Sistem",
-      items: [
-        { label: "Dasbor Admin", href: "/admin", icon: ShieldCheck },
-        { label: "Kelola Pengguna", href: "/admin/pengguna", icon: Users },
-        { label: "Kelola Layanan", href: "/admin/layanan", icon: ClipboardList },
-        { label: "Jadwal Dokter", href: "/admin/jadwal-dokter", icon: CalendarDays },
+    navSections.push({
+      title: "Administrasi & Pengawasan",
+      links: [
+        { label: "Dasbor Pemilik", href: "/admin", icon: Shield },
+        { label: "Kelola Pengguna & Peran", href: "/admin/pengguna", icon: Users },
+        { label: "Katalog Layanan", href: "/admin/layanan", icon: ClipboardList },
+        { label: "Jadwal Praktik Dokter", href: "/admin/jadwal-dokter", icon: CalendarDays },
         { label: "Laporan Kunjungan", href: "/admin/laporan", icon: BarChart3 },
       ],
     });
   }
 
-  // Profil untuk semua
-  navItems.push({
-    category: "Akun",
-    items: [
-      { label: "Profil Saya", href: "/profil", icon: User },
-    ],
+  navSections.push({
+    title: "Pengaturan Akun",
+    links: [{ label: "Profil Saya", href: "/profil", icon: User }],
   });
 
+  const mobileBottomLinks = [
+    ...(role === "pasien"
+      ? [
+          { label: "Beranda", href: "/beranda", icon: LayoutDashboard },
+          { label: "Janji", href: "/janji", icon: Calendar },
+          { label: "Booking", href: "/janji/baru", icon: PlusCircle, isPrimary: true },
+          { label: "Riwayat", href: "/riwayat", icon: FileText },
+          { label: "Profil", href: "/profil", icon: User },
+        ]
+      : role === "resepsionis"
+      ? [
+          { label: "Dasbor", href: "/resepsionis", icon: Activity },
+          { label: "Antrean", href: "/resepsionis/janji", icon: ClipboardList },
+          { label: "Pasien", href: "/resepsionis/pasien", icon: Users },
+          { label: "Profil", href: "/profil", icon: User },
+        ]
+      : role === "dokter"
+      ? [
+          { label: "Ruang Dokter", href: "/dokter", icon: Stethoscope },
+          { label: "Profil", href: "/profil", icon: User },
+        ]
+      : [
+          { label: "Admin", href: "/admin", icon: Shield },
+          { label: "Pengguna", href: "/admin/pengguna", icon: Users },
+          { label: "Layanan", href: "/admin/layanan", icon: ClipboardList },
+          { label: "Laporan", href: "/admin/laporan", icon: BarChart3 },
+          { label: "Profil", href: "/profil", icon: User },
+        ]),
+  ];
+
+  const userInitial = (userData?.nama || "P").charAt(0).toUpperCase();
+
   return (
-    <div className="min-h-screen bg-[#F4F7F9] flex flex-col">
-      {/* Top Bar */}
-      <header className="sticky top-0 z-40 bg-[#0E7490] text-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[#f8fcfe] flex flex-col text-slate-800 font-sans selection:bg-cyan-100 selection:text-cyan-900">
+      {/* Top Header (Dantoa Dental Theme) */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
+              id="btn-mobile-menu"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition"
-              aria-label="Toggle menu"
+              className="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+              aria-label="Buka Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight">
-              <div className="w-9 h-9 bg-white text-[#0E7490] rounded-xl flex items-center justify-center shadow-sm">
-                <Smile className="w-5 h-5 stroke-[2.5]" />
-              </div>
+            <Link href="/" className="flex items-center gap-3 group">
+              <Logo size="md" />
               <div className="flex flex-col">
-                <span className="leading-tight">Senyum Rekah</span>
-                <span className="text-[10px] text-cyan-100 font-normal tracking-wider uppercase">Portal Janji Temu</span>
+                <span className="font-extrabold text-sm sm:text-base leading-tight tracking-tight text-slate-900">
+                  Senyum Rekah
+                </span>
+                <span className="text-[10px] uppercase tracking-wider text-cyan-600 font-bold hidden sm:block">Dental Clinic Portal</span>
               </div>
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex flex-col items-end">
-              <span className="text-sm font-semibold leading-tight">{userData?.nama || "Memuat..."}</span>
-              <span className="text-xs text-cyan-100">{userData?.email || ""}</span>
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex flex-col items-end text-right">
+              <span className="text-xs font-bold leading-tight text-slate-900">{userData?.nama || "Pengguna"}</span>
+              <span className="text-[11px] text-slate-500 leading-tight">{userData?.email || ""}</span>
             </div>
             {userData && getRoleBadge(userData.role)}
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#06b6d4] to-[#00c5de] text-white font-black text-xs flex items-center justify-center shadow-md shadow-cyan-500/20">
+              {userInitial}
+            </div>
             <button
+              id="btn-keluar"
               onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-medium transition"
-              title="Keluar dari akun"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition"
+              title="Keluar dari sesi"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Keluar</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Container with Sidebar */}
-      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex gap-6">
-        {/* Sidebar Desktop */}
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex gap-6 pb-24 md:pb-8">
+        {/* Desktop Sidebar */}
         <aside className="hidden lg:block w-64 shrink-0">
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sticky top-24 space-y-6">
-            {navItems.map((group, idx) => (
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_15px_rgba(0,180,216,0.05)] p-4 sticky top-24 space-y-6">
+            {navSections.map((section, idx) => (
               <div key={idx} className="space-y-1">
-                <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                  {group.category}
-                </p>
-                {group.items.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = pathname === item.href;
+                <h3 className="px-3 pt-1 pb-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+                  {section.title}
+                </h3>
+                {section.links.map((link) => {
+                  const Icon = link.icon;
+                  const isActive = pathname === link.href;
                   return (
                     <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition ${
+                      key={link.href}
+                      href={link.href}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-bold transition-all ${
                         isActive
-                          ? "bg-[#0E7490] text-white shadow-sm"
+                          ? "text-[#0891b2] bg-cyan-50 shadow-xs border border-cyan-200/60"
                           : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
+                      <span
+                        className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                          isActive
+                            ? "bg-[#06b6d4] text-white shadow-xs"
+                            : "text-slate-400 bg-slate-100"
+                        }`}
+                      >
+                        <Icon className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="truncate">{link.label}</span>
+                      {isActive && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#06b6d4]" />
+                      )}
                     </Link>
                   );
                 })}
@@ -196,46 +237,66 @@ export default function AppLayout({ children }) {
               className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
               onClick={() => setMobileMenuOpen(false)}
             />
-            <div className="relative w-72 bg-white h-full p-4 overflow-y-auto space-y-6 shadow-xl">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <Smile className="w-5 h-5 text-[#0E7490]" />
-                  <span className="font-bold text-slate-800">Senyum Rekah</span>
+            <div className="relative w-72 bg-white h-full p-6 overflow-y-auto space-y-5 shadow-2xl">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <Logo size="sm" />
+                  <div>
+                    <span className="font-extrabold text-sm text-slate-900 block leading-tight">Senyum Rekah</span>
+                    <span className="text-[10px] uppercase font-bold text-cyan-600">{userData?.nama || "Portal"}</span>
+                  </div>
                 </div>
                 <button
+                  id="btn-tutup-menu"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:bg-slate-100"
+                  className="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {navItems.map((group, idx) => (
+              {navSections.map((section, idx) => (
                 <div key={idx} className="space-y-1">
-                  <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    {group.category}
-                  </p>
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                  <h3 className="px-2 pt-1 pb-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+                    {section.title}
+                  </h3>
+                  {section.links.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = pathname === link.href;
                     return (
                       <Link
-                        key={item.href}
-                        href={item.href}
+                        key={link.href}
+                        href={link.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-bold transition ${
                           isActive
-                            ? "bg-[#0E7490] text-white shadow-sm"
+                            ? "bg-cyan-50 text-[#0891b2] border border-cyan-200/60"
                             : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                         }`}
                       >
-                        <Icon className="w-4 h-4 shrink-0" />
-                        <span>{item.label}</span>
+                        <span
+                          className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
+                            isActive ? "bg-[#06b6d4] text-white shadow-xs" : "text-slate-400 bg-slate-100"
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                        </span>
+                        <span>{link.label}</span>
                       </Link>
                     );
                   })}
                 </div>
               ))}
+
+              <div className="pt-4 border-t border-slate-100">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-2xl text-xs font-bold text-rose-600 hover:bg-rose-50 w-full transition"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Keluar dari Sesi
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -245,6 +306,54 @@ export default function AppLayout({ children }) {
           {children}
         </main>
       </div>
+
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-[0_-2px_12px_rgba(0,0,0,0.06)] px-2 py-2 flex items-center justify-around">
+        {mobileBottomLinks.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
+          if (item.isPrimary) {
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col items-center justify-center -mt-5"
+              >
+                <div className="w-12 h-12 rounded-full text-white bg-gradient-to-tr from-[#06b6d4] to-[#00c5de] shadow-lg shadow-cyan-500/30 flex items-center justify-center hover:scale-105 transition active:scale-95">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-extrabold text-[#06b6d4] mt-1">{item.label}</span>
+              </Link>
+            );
+          }
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
+                isActive ? "text-[#06b6d4]" : "text-slate-400 hover:text-slate-700"
+              }`}
+            >
+              <div className={`w-7 h-7 rounded-xl flex items-center justify-center transition ${
+                isActive ? "bg-[#06b6d4] text-white shadow-xs" : "text-slate-400"
+              }`}>
+                <Icon className="w-4 h-4" />
+              </div>
+              <span className={`text-[10px] mt-0.5 font-bold ${isActive ? "text-[#06b6d4]" : "text-slate-500"}`}>
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Bottom Legal bar */}
+      <footer className="mt-auto border-t border-slate-100 bg-white py-4 text-center text-xs text-slate-400 hidden md:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>Klinik Gigi Senyum Rekah · Makassar, Sulawesi Selatan</span>
+          <span>Buka Senin–Sabtu: 09:00–15:00 WITA · janji.senyumrekah.id</span>
+        </div>
+      </footer>
     </div>
   );
 }

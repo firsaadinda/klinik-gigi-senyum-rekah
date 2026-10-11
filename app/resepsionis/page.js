@@ -17,8 +17,8 @@ import {
   AlertCircle,
   ArrowRight,
   Loader2,
-  CheckCircle,
-  Stethoscope,
+  RefreshCw,
+  Sparkles
 } from "lucide-react";
 
 export default function DasborResepsionisPage() {
@@ -38,30 +38,17 @@ export default function DasborResepsionisPage() {
       const today = new Date().toISOString().split("T")[0];
       setTodayStr(today);
 
-      // 1. Ambil jumlah janji menunggu konfirmasi
-      const qWait = query(
-        collection(db, "janji_temu"),
-        where("status", "==", "menunggu")
-      );
+      const qWait = query(collection(db, "janji_temu"), where("status", "==", "menunggu"));
       const snapWait = await getDocs(qWait);
       setWaitingCount(snapWait.size);
 
-      // 2. Ambil semua dokter
-      const qDoc = query(
-        collection(db, "users"),
-        where("role", "==", "dokter"),
-        where("aktif", "==", true)
-      );
+      const qDoc = query(collection(db, "users"), where("role", "==", "dokter"), where("aktif", "==", true));
       const snapDoc = await getDocs(qDoc);
       const docList = [];
       snapDoc.forEach((d) => docList.push({ id: d.id, ...d.data() }));
       setDoctors(docList);
 
-      // 3. Ambil janji hari ini
-      const qToday = query(
-        collection(db, "janji_temu"),
-        where("tanggal", "==", today)
-      );
+      const qToday = query(collection(db, "janji_temu"), where("tanggal", "==", today));
       const snapToday = await getDocs(qToday);
 
       const byDoctor = {};
@@ -88,12 +75,7 @@ export default function DasborResepsionisPage() {
           } catch {}
         }
 
-        const appointmentObj = {
-          id: d.id,
-          ...item,
-          patientName,
-          serviceName,
-        };
+        const appointmentObj = { id: d.id, ...item, patientName, serviceName };
 
         if (byDoctor[item.dokterId]) {
           byDoctor[item.dokterId].push(appointmentObj);
@@ -102,7 +84,6 @@ export default function DasborResepsionisPage() {
         }
       }
 
-      // Sort by jam in each doctor column
       Object.keys(byDoctor).forEach((dId) => {
         byDoctor[dId].sort((a, b) => (a.jam || "").localeCompare(b.jam || ""));
       });
@@ -123,154 +104,193 @@ export default function DasborResepsionisPage() {
   return (
     <RouteGuard allowedRoles={["resepsionis"]}>
       <AppLayout>
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#0E7490]">Meja Depan</span>
-              <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">Dasbor Resepsionis</h1>
-              <p className="text-xs text-slate-500 mt-1">
-                Kelola konfirmasi janji dan pantau kedatangan pasien klinik hari ini ({todayStr}).
-              </p>
+        <div className="space-y-6 max-w-5xl mx-auto">
+          {/* Header Banner (Dantoa Dental Soft Banner) */}
+          <div className="bg-gradient-to-r from-[#e9f7fb] via-[#f0f9ff] to-white rounded-3xl p-6 sm:p-8 border border-cyan-100 shadow-[0_2px_15px_rgba(0,180,216,0.06)] relative overflow-hidden">
+            <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white text-[#0891b2] text-[11px] font-extrabold uppercase tracking-wider shadow-xs border border-cyan-200">
+                  Meja Depan Klinik · {todayStr}
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                  Dasbor Operasional Resepsionis
+                </h1>
+                <p className="text-slate-600 text-xs sm:text-sm font-medium max-w-md">
+                  Verifikasi kedatangan pasien, konfirmasi jadwal reservasi, dan koordinasi antrean dokter gigi secara realtime.
+                </p>
+              </div>
+
+              <Link
+                href="/resepsionis/janji"
+                id="btn-kelola-janji"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#00c5de] to-[#06b6d4] hover:from-[#06b6d4] hover:to-[#0891b2] text-white text-xs font-extrabold uppercase tracking-wider shadow-md shadow-cyan-500/25 transition shrink-0 active:scale-95"
+              >
+                <ClipboardList className="w-4 h-4" />
+                <span>Kelola Semua Janji</span>
+              </Link>
             </div>
-            <Link
-              href="/resepsionis/janji"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0E7490] text-white text-xs font-semibold hover:bg-[#155E75] shadow-sm transition shrink-0"
-            >
-              <ClipboardList className="w-4 h-4" />
-              Kelola Semua Janji
-            </Link>
           </div>
 
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
+            <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl flex items-center gap-2.5">
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          {/* Kartu Ringkasan Sesuai PRD 4.6 */}
+          {/* Metric Cards (Dantoa Dental Stats style) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
               href="/resepsionis/janji?status=menunggu"
-              className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:border-amber-400 transition group"
+              id="card-menunggu"
+              className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] p-6 hover:border-amber-300 hover:shadow-md transition group block"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Menunggu Konfirmasi</span>
-                <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                  <ClipboardList className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Menunggu Konfirmasi
                 </span>
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <ClipboardList className="w-5 h-5" />
+                </div>
               </div>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-amber-600 tabular-nums">
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl sm:text-4xl font-black text-amber-600 tabular-nums">
                   {loading ? "..." : waitingCount}
                 </span>
-                <span className="text-xs text-slate-400">janji baru</span>
+                <span className="text-xs font-bold text-slate-500 uppercase">Permohonan</span>
               </div>
-              <p className="text-[11px] text-[#0E7490] mt-3 group-hover:underline flex items-center gap-1 font-semibold">
-                Buka daftar saringan Menunggu →
+              <p className="text-xs text-[#06b6d4] mt-3 flex items-center gap-1 font-bold group-hover:underline">
+                Saring status Menunggu <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </p>
             </Link>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tanggal Operasional</span>
-                <span className="w-8 h-8 rounded-xl bg-cyan-50 text-[#0E7490] flex items-center justify-center">
-                  <Calendar className="w-4 h-4" />
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Tanggal Operasional
                 </span>
+                <div className="w-10 h-10 rounded-2xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center">
+                  <Calendar className="w-5 h-5" />
+                </div>
               </div>
-              <div className="mt-4">
-                <span className="text-xl font-bold text-slate-800 tabular-nums">{todayStr}</span>
-                <p className="text-xs text-slate-400 mt-1">Waktu Indonesia Tengah (WITA)</p>
+              <div>
+                <span className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
+                  {todayStr || "--"}
+                </span>
+                <p className="text-xs text-slate-400 mt-1 font-medium">Zona Waktu Makassar (WITA)</p>
               </div>
             </div>
 
             <Link
               href="/resepsionis/pasien"
-              className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:border-[#0E7490] transition group"
+              id="card-pasien"
+              className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] p-6 hover:border-cyan-300 hover:shadow-md transition group block"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Data Pasien</span>
-                <span className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                  <Users className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Buku Kontak Pasien
                 </span>
+                <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Users className="w-5 h-5" />
+                </div>
               </div>
-              <div className="mt-4">
-                <span className="text-base font-bold text-slate-800">Buku Kontak Pasien</span>
-                <p className="text-xs text-slate-400 mt-1">Cari nomor HP & WhatsApp pasien</p>
+              <div>
+                <span className="text-base font-extrabold text-slate-900 block">Direktori & WhatsApp</span>
+                <p className="text-xs text-slate-400 mt-0.5">Verifikasi nomor kontak pasien</p>
               </div>
-              <p className="text-[11px] text-[#0E7490] mt-3 group-hover:underline flex items-center gap-1 font-semibold">
-                Lihat daftar kontak →
+              <p className="text-xs text-[#06b6d4] mt-3 flex items-center gap-1 font-bold group-hover:underline">
+                Buka daftar pasien <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </p>
             </Link>
           </div>
 
-          {/* Janji Hari Ini Per Dokter Sesuai PRD 4.6 */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-[#0E7490]" />
-                Jadwal Janji Hari Ini per Dokter
-              </h2>
+          {/* Doctor Queue Board */}
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-slate-900">Jadwal Praktik Dokter Hari Ini</h2>
+                  <p className="text-xs text-slate-400">Antrean pasien per ruang periksa dokter gigi</p>
+                </div>
+              </div>
               <button
+                id="btn-segarkan"
                 onClick={loadData}
-                className="text-xs text-[#0E7490] font-semibold hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs text-[#06b6d4] font-bold hover:text-[#0891b2] px-4 py-2 rounded-full hover:bg-cyan-50 transition"
               >
+                <RefreshCw className="w-3.5 h-3.5" />
                 Segarkan
               </button>
             </div>
 
-            {loading ? (
-              <div className="py-12 flex flex-col items-center justify-center text-slate-400">
-                <Loader2 className="w-7 h-7 animate-spin text-[#0E7490] mb-2" />
-                <p className="text-xs">Memuat jadwal dokter...</p>
-              </div>
-            ) : doctors.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 text-center">Belum ada akun dokter terdaftar.</p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {doctors.map((docItem) => {
-                  const appointments = todayAppointmentsByDoctor[docItem.id] || [];
-                  return (
-                    <div key={docItem.id} className="bg-slate-50/70 border border-slate-200 rounded-2xl p-5 space-y-3">
-                      <div className="flex items-center justify-between pb-2 border-b border-slate-200">
-                        <div className="flex items-center gap-2">
-                          <Stethoscope className="w-4 h-4 text-[#0E7490]" />
-                          <h3 className="font-bold text-slate-800 text-sm">{docItem.nama}</h3>
+            <div className="p-6">
+              {loading ? (
+                <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
+                  <Loader2 className="w-7 h-7 animate-spin text-[#06b6d4]" />
+                  <p className="text-xs font-medium">Memuat antrean dokter...</p>
+                </div>
+              ) : doctors.length === 0 ? (
+                <p className="text-xs text-slate-400 py-8 text-center">Belum ada akun dokter terdaftar.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {doctors.map((docItem) => {
+                    const appointments = todayAppointmentsByDoctor[docItem.id] || [];
+                    const initial = docItem.nama ? docItem.nama.replace("drg. ", "").charAt(0) : "D";
+                    return (
+                      <div key={docItem.id} className="bg-slate-50 border border-slate-200 rounded-3xl overflow-hidden">
+                        {/* Doctor Card Header */}
+                        <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-white">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#06b6d4] to-[#00c5de] text-white font-black text-xs flex items-center justify-center shadow-xs">
+                              {initial}
+                            </div>
+                            <div>
+                              <h3 className="font-extrabold text-slate-900 text-xs sm:text-sm">{docItem.nama}</h3>
+                              <p className="text-[11px] text-cyan-600 font-bold uppercase tracking-wider">Dokter Gigi Pemeriksa</p>
+                            </div>
+                          </div>
+                          <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-cyan-50 text-cyan-800 border border-cyan-200">
+                            {appointments.length} Pasien
+                          </span>
                         </div>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
-                          {appointments.length} Janji
-                        </span>
-                      </div>
 
-                      {appointments.length === 0 ? (
-                        <div className="py-8 text-center text-xs text-slate-400">
-                          Tidak ada janji untuk dokter ini hari ini.
+                        <div className="p-4 space-y-2.5">
+                          {appointments.length === 0 ? (
+                            <div className="py-8 text-center text-xs text-slate-400 bg-white/70 rounded-2xl border border-dashed border-slate-200">
+                              Tidak ada antrean hari ini
+                            </div>
+                          ) : (
+                            appointments.map((apt) => (
+                              <Link
+                                key={apt.id}
+                                href={`/resepsionis/janji/${apt.id}`}
+                                className="flex items-center justify-between p-3.5 bg-white rounded-2xl border border-slate-200/80 hover:border-[#06b6d4] hover:shadow-sm transition group"
+                              >
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Clock className="w-3.5 h-3.5 text-[#06b6d4]" />
+                                    <span className="font-extrabold text-xs text-slate-900 tabular-nums">{apt.jam} WITA</span>
+                                    <StatusBadge status={apt.status} />
+                                  </div>
+                                  <p className="text-xs font-bold text-slate-800 group-hover:text-[#06b6d4] transition pl-5">
+                                    {apt.patientName}
+                                  </p>
+                                  <p className="text-[11px] text-slate-400 pl-5">{apt.serviceName}</p>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#06b6d4] transition shrink-0" />
+                              </Link>
+                            ))
+                          )}
                         </div>
-                      ) : (
-                        <div className="space-y-2">
-                          {appointments.map((apt) => (
-                            <Link
-                              key={apt.id}
-                              href={`/resepsionis/janji/${apt.id}`}
-                              className="block p-3 bg-white rounded-xl border border-slate-200 hover:border-[#0E7490] hover:shadow-sm transition"
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="font-bold text-xs text-slate-800 tabular-nums">
-                                  {apt.jam} WITA
-                                </span>
-                                <StatusBadge status={apt.status} />
-                              </div>
-                              <p className="text-xs font-semibold text-slate-700 mt-1">{apt.patientName}</p>
-                              <p className="text-[11px] text-slate-500">{apt.serviceName}</p>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </AppLayout>

@@ -64,7 +64,6 @@ function PemeriksaanDokterContent() {
       const data = snap.data();
 
       // PRD 4.10: Validasi hanya janji milik dokter itu yang bisa dibuka!
-      // Bila ID diganti dengan janji dokter lain, tampil "Janji tidak ditemukan"
       if (userData?.role !== "super_admin" && data.dokterId !== user.uid) {
         setNotFound(true);
         setLoading(false);
@@ -146,43 +145,45 @@ function PemeriksaanDokterContent() {
     <div className="max-w-2xl mx-auto space-y-6">
       <Link
         href="/dokter"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800"
+        className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition"
       >
-        <ArrowLeft className="w-3.5 h-3.5" />
+        <ArrowLeft className="w-4 h-4" />
         Kembali ke Dasbor Dokter
       </Link>
 
       {loading ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
-          <Loader2 className="w-8 h-8 text-[#0E7490] animate-spin mx-auto mb-2" />
-          <p className="text-sm">Memuat data pemeriksaan...</p>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-14 text-center text-slate-500 shadow-xs">
+          <Loader2 className="w-7 h-7 text-[#0E7490] animate-spin mx-auto mb-2" />
+          <p className="text-xs font-medium">Memuat formulir pemeriksaan...</p>
         </div>
       ) : notFound ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-          <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle className="w-7 h-7" />
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-xs">
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-200">
+            <AlertTriangle className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-bold text-slate-800 mb-2">Janji Tidak Ditemukan</h2>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
-            Janji ini bukan jadwal milik Anda atau ID janji tidak valid sesuai otorisasi PRD Bab 4.10.
+          <h2 className="text-base font-bold text-slate-900 mb-1">Janji Pemeriksaan Tidak Ditemukan</h2>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto mb-5 leading-relaxed">
+            Janji ini bukan jadwal yang dialokasikan untuk Anda atau nomor registrasi tidak valid sesuai aturan otorisasi PRD Bab 4.10.
           </p>
           <Link
             href="/dokter"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0E7490] text-white text-xs font-semibold"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#0E7490] text-white text-xs font-bold hover:bg-[#155E75] shadow-xs transition"
           >
             Kembali ke Dasbor Dokter
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div className="p-6 bg-purple-50/60 border-b border-purple-100 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+          <div className="p-6 sm:p-7 bg-slate-50/80 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center border border-purple-200/80">
                 <Stethoscope className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-xs font-semibold text-purple-700 uppercase tracking-wider">Formulir Pemeriksaan Medis</span>
-                <h1 className="text-xl font-bold text-slate-800">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 block">
+                  Formulir Rekam Tindakan Medis
+                </span>
+                <h1 className="text-lg font-bold text-slate-900 mt-0.5">
                   {patientData?.nama || "Pasien"}
                 </h1>
               </div>
@@ -193,38 +194,38 @@ function PemeriksaanDokterContent() {
               {janji.pasienId && (
                 <Link
                   href={`/dokter/pasien/${janji.pasienId}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-purple-200 text-purple-700 text-xs font-semibold hover:bg-purple-50 transition shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 text-slate-700 text-xs font-bold hover:bg-slate-50 transition shadow-2xs"
                   title="Lihat rekam medis terdahulu pasien ini"
                 >
-                  <History className="w-3.5 h-3.5" />
+                  <History className="w-3.5 h-3.5 text-slate-400" />
                   Riwayat Pasien
                 </Link>
               )}
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-6 sm:p-7 space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  Layanan yang Diminta
+              <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-200/80">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  Layanan yang Dimohon
                 </span>
-                <strong className="text-slate-800 text-sm">{serviceData?.nama || "Pemeriksaan Gigi"}</strong>
+                <strong className="text-slate-900 text-xs block">{serviceData?.nama || "Pemeriksaan Gigi"}</strong>
               </div>
 
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  Jadwal Pemeriksaan
+              <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-200/80">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  Jadwal Praktik
                 </span>
-                <strong className="text-slate-800 text-sm tabular-nums">
+                <strong className="text-slate-900 text-xs tabular-nums block">
                   {janji.tanggal} pukul {janji.jam} WITA
                 </strong>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                Keluhan Pasien
+            <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-200/80">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                Keluhan Pasien Saat Reservasi
               </span>
               <p className="text-xs text-slate-700 italic">
                 &ldquo;{janji.keluhan || "Tidak ada catatan keluhan khusus."}&rdquo;
@@ -232,27 +233,27 @@ function PemeriksaanDokterContent() {
             </div>
 
             {success && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+              <div className="p-4 bg-emerald-50/80 border border-emerald-200 text-emerald-800 rounded-2xl text-xs flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  Pemeriksaan berhasil diselesaikan! Catatan perawatan tersimpan dan pasien dapat membacanya di Riwayat Perawatan. Mengalihkan...
+                  Pemeriksaan berhasil diselesaikan. Rekam medis telah tercatat permanen di data klinik. Mengalihkan...
                 </span>
               </div>
             )}
 
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+              <div className="p-4 bg-red-50/80 border border-red-200 text-red-700 rounded-2xl text-xs flex items-center gap-2.5">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             {janji.status !== "hadir" && !success ? (
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-                ⚠️ Janji ini berstatus <strong className="uppercase">{janji.status}</strong>. Pengisian pemeriksaan hanya dapat dilakukan saat pasien sudah ditandai <strong>HADIR</strong> oleh resepsionis meja depan (PRD 4.10).
+              <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs text-amber-800 leading-relaxed">
+                Status saat ini: <strong className="uppercase">{janji.status}</strong>. Pengisian catatan tindakan hanya dapat diproses bila status pasien telah diverifikasi <strong>HADIR</strong> oleh resepsionis meja depan (PRD Bab 4.10).
               </div>
             ) : (
-              <form onSubmit={handleSubmitPemeriksaan} className="space-y-5 pt-2">
+              <form onSubmit={handleSubmitPemeriksaan} className="space-y-4 pt-1">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                     Tindakan Medis yang Dilakukan <span className="text-red-500">*</span>
@@ -262,46 +263,46 @@ function PemeriksaanDokterContent() {
                     rows={3}
                     value={tindakan}
                     onChange={(e) => setTindakan(e.target.value)}
-                    placeholder="Contoh: Tambal gigi geraham bawah dengan bahan komposit nanofill..."
-                    className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600"
+                    placeholder="Contoh: Pembersihan karang gigi (scaling) rahang atas dan bawah, aplikasi fluorida..."
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Catatan & Instruksi Perawatan Dokter <span className="text-red-500">*</span>
+                    Catatan & Instruksi Perawatan Pasca-Tindakan <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     required
                     rows={3}
                     value={catatan}
                     onChange={(e) => setCatatan(e.target.value)}
-                    placeholder="Contoh: Hindari makanan dan minuman keras atau terlalu dingin selama 24 jam pertama..."
-                    className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600"
+                    placeholder="Contoh: Hindari makanan terlalu keras/dingin 24 jam ke depan, kontrol berkala dalam 6 bulan..."
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                   />
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
                   <Link
                     href="/dokter"
-                    className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-full border border-slate-200 transition"
                   >
                     Batal
                   </Link>
                   <button
                     type="submit"
                     disabled={submitting || success}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-700 shadow-sm disabled:opacity-50 transition"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-purple-700 text-white text-xs font-bold hover:bg-purple-800 disabled:opacity-50 transition shadow-xs"
                   >
                     {submitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         Menyimpan Rekam Medis...
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        Tandai Selesai & Simpan Catatan
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Tandai Selesai & Simpan Rekam Medis
                       </>
                     )}
                   </button>
@@ -320,7 +321,7 @@ export default function PemeriksaanDokterPage() {
     <RouteGuard allowedRoles={["dokter"]}>
       <AppLayout>
         <Suspense fallback={
-          <div className="p-12 text-center text-slate-400">
+          <div className="p-14 text-center text-slate-400">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#0E7490]" />
           </div>
         }>

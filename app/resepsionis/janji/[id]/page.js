@@ -27,6 +27,7 @@ import {
   Loader2,
   Stethoscope,
   FileQuestion,
+  ShieldCheck,
 } from "lucide-react";
 
 function RincianJanjiResepsionisContent() {
@@ -162,111 +163,118 @@ function RincianJanjiResepsionisContent() {
     <div className="max-w-2xl mx-auto space-y-6">
       <Link
         href="/resepsionis/janji"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800"
+        className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition"
       >
-        <ArrowLeft className="w-3.5 h-3.5" />
+        <ArrowLeft className="w-4 h-4" />
         Kembali ke Kelola Janji
       </Link>
 
       {loading ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
-          <Loader2 className="w-8 h-8 text-[#0E7490] animate-spin mx-auto mb-2" />
-          <p className="text-sm">Memuat data rincian...</p>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-14 text-center text-slate-500 shadow-xs">
+          <Loader2 className="w-7 h-7 text-[#0E7490] animate-spin mx-auto mb-2" />
+          <p className="text-xs font-medium">Memuat data rincian janji...</p>
         </div>
       ) : notFound ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-xs">
           <FileQuestion className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-          <h2 className="text-lg font-bold text-slate-800">Janji Tidak Ditemukan</h2>
+          <h2 className="text-base font-bold text-slate-900">Janji Tidak Ditemukan</h2>
           <p className="text-xs text-slate-500 mt-1 mb-5">
-            Dokumen janji temu dengan kode ini tidak tersedia di database klinik.
+            Dokumen reservasi janji temu dengan kode ini tidak tercatat di pangkalan data klinik.
           </p>
           <Link
             href="/resepsionis/janji"
-            className="px-4 py-2 bg-[#0E7490] text-white rounded-xl text-xs font-semibold"
+            className="px-5 py-2.5 bg-[#0E7490] text-white rounded-full text-xs font-bold shadow-xs hover:bg-[#155E75] transition"
           >
             Kembali ke Daftar Janji
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div className="p-6 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+          {/* Header Card Voucher Style */}
+          <div className="p-6 sm:p-7 bg-gradient-to-r from-cyan-900 to-[#0E7490] text-white flex items-center justify-between">
             <div>
-              <span className="text-xs text-slate-400 font-mono">Kode Janji: #{janji.id}</span>
-              <h1 className="text-xl font-bold text-slate-800 mt-1">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-cyan-200 block">
+                Kode Janji: #{janji.id}
+              </span>
+              <h1 className="text-xl font-bold mt-1 tracking-tight">
                 {serviceData?.nama || "Pemeriksaan Gigi"}
               </h1>
             </div>
             <StatusBadge status={janji.status} />
           </div>
 
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-6 sm:p-7 space-y-5">
             {janji.status === "dibatalkan" && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs">
-                <p className="font-bold flex items-center gap-1.5 mb-1">
-                  <XCircle className="w-4 h-4 text-red-600" />
-                  Status Janji Dibatalkan
+              <div className="p-4 bg-red-50/80 border border-red-200/80 rounded-2xl text-red-800 text-xs">
+                <p className="font-bold flex items-center gap-1.5 mb-1 text-red-700">
+                  <XCircle className="w-4 h-4" />
+                  Status Janji Telah Dibatalkan
                 </p>
-                <p>Alasan: <span className="font-medium">{janji.alasanBatal || "Tidak ada alasan spesifik."}</span></p>
+                <p>Keterangan Alasan: <span className="font-semibold text-red-900">{janji.alasanBatal || "Tidak ada alasan spesifik."}</span></p>
               </div>
             )}
 
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+            {/* Kontak Pasien (PRD 4.8) */}
+            <div className="p-4.5 bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
                 Informasi Kontak Pasien (PRD 4.8)
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Nama Lengkap:</span>
-                  <strong className="text-slate-800 text-sm">{patientData?.nama || "Pasien"}</strong>
+                  <span className="text-slate-400 block text-[11px]">Nama Pasien:</span>
+                  <strong className="text-slate-900 text-xs block mt-0.5">{patientData?.nama || "Pasien"}</strong>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[11px]">Nomor WhatsApp:</span>
-                  <strong className="text-slate-800 tabular-nums">{patientData?.noHp || "-"}</strong>
+                  <strong className="text-slate-900 tabular-nums text-xs block mt-0.5">{patientData?.noHp || "-"}</strong>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[11px]">Email:</span>
-                  <span className="text-slate-700">{patientData?.email || "-"}</span>
+                  <span className="text-slate-700 text-xs block mt-0.5">{patientData?.email || "-"}</span>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  Dokter yang Bertugas
+              <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-200/80">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  Dokter Pemeriksa Bertugas
                 </span>
-                <strong className="text-slate-800 text-sm">{doctorName || "drg. Dokter Gigi"}</strong>
+                <strong className="text-slate-900 text-xs block">{doctorName || "drg. Dokter Gigi"}</strong>
               </div>
 
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  Waktu Janji Temu
+              <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-200/80">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                  Waktu Reservasi Praktik
                 </span>
-                <strong className="text-slate-800 text-sm tabular-nums">
+                <strong className="text-slate-900 text-xs tabular-nums block">
                   {janji.tanggal} pukul {janji.jam} WITA
                 </strong>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                Keluhan Pasien
+            <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-200/80">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                Uraian Keluhan Pasien
               </span>
               <p className="text-xs text-slate-700 italic">
-                &ldquo;{janji.keluhan || "Tidak ada catatan keluhan."}&rdquo;
+                &ldquo;{janji.keluhan || "Tidak ada catatan keluhan khusus."}&rdquo;
               </p>
             </div>
 
-            <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-[11px] text-amber-800">
-              🔒 <strong>Privasi Medis:</strong> Sesuai PRD Bab 2.4 dan 4.8, resepsionis tidak memiliki akses untuk melihat catatan perawatan maupun tindakan medis dokter.
+            <div className="p-3.5 bg-cyan-50/70 border border-cyan-100 rounded-2xl text-[11px] text-slate-700 flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-[#0E7490] shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold text-[#0E7490]">Protokol Privasi Rekam Medis:</span> Sesuai ketentuan PRD Bab 2.4 & 4.8, modul resepsionis dibatasi pada koordinasi kedatangan & kontak. Tindakan serta catatan rekam medis dokter dirahasiakan dan dikunci oleh sistem.
+              </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
               <Link
                 href="/resepsionis/janji"
-                className="text-xs font-semibold text-slate-500 hover:text-slate-800"
+                className="text-xs font-bold text-slate-500 hover:text-slate-800"
               >
-                ← Kembali ke Tabel
+                ← Kembali ke Antrean
               </Link>
 
               <div className="flex items-center gap-2">
@@ -274,7 +282,7 @@ function RincianJanjiResepsionisContent() {
                   <button
                     onClick={handleConfirm}
                     disabled={actionLoading}
-                    className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 shadow-sm transition"
+                    className="px-4 py-2 rounded-full bg-[#0E7490] text-white text-xs font-bold hover:bg-[#155E75] shadow-xs transition"
                   >
                     Konfirmasi Janji
                   </button>
@@ -284,7 +292,7 @@ function RincianJanjiResepsionisContent() {
                   <button
                     onClick={handleMarkPresent}
                     disabled={actionLoading}
-                    className="px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-semibold hover:bg-purple-700 shadow-sm transition"
+                    className="px-4 py-2 rounded-full bg-purple-700 text-white text-xs font-bold hover:bg-purple-800 shadow-xs transition"
                   >
                     Tandai Pasien Hadir
                   </button>
@@ -293,7 +301,7 @@ function RincianJanjiResepsionisContent() {
                 {["menunggu", "dikonfirmasi"].includes(janji.status) && (
                   <button
                     onClick={() => setShowCancelModal(true)}
-                    className="px-4 py-2 rounded-xl bg-red-50 text-red-600 border border-red-200 text-xs font-semibold hover:bg-red-100 transition"
+                    className="px-4 py-2 rounded-full bg-white text-red-600 border border-red-200 text-xs font-bold hover:bg-red-50 transition"
                   >
                     Batalkan Janji
                   </button>
@@ -306,14 +314,14 @@ function RincianJanjiResepsionisContent() {
 
       {showCancelModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2 text-red-600">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200/80 space-y-4">
+            <h3 className="text-base font-bold text-red-600 flex items-center gap-2">
               <XCircle className="w-5 h-5" />
               Batalkan Janji Temu
             </h3>
             <form onSubmit={handleCancelSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Alasan Pembatalan <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -322,21 +330,21 @@ function RincianJanjiResepsionisContent() {
                   value={alasanBatal}
                   onChange={(e) => setAlasanBatal(e.target.value)}
                   placeholder="Tuliskan alasan pembatalan..."
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none"
+                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20"
                 />
               </div>
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowCancelModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-full border border-slate-200 transition"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading || !alasanBatal.trim()}
-                  className="px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl"
+                  className="px-4 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-full shadow-xs transition"
                 >
                   {actionLoading ? "Menyimpan..." : "Simpan Pembatalan"}
                 </button>
@@ -354,7 +362,7 @@ export default function RincianJanjiResepsionisPage() {
     <RouteGuard allowedRoles={["resepsionis"]}>
       <AppLayout>
         <Suspense fallback={
-          <div className="p-12 text-center text-slate-400">
+          <div className="p-14 text-center text-slate-400">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#0E7490]" />
           </div>
         }>

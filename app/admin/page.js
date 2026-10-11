@@ -15,7 +15,6 @@ import {
   BarChart3,
   Calendar,
   ArrowRight,
-  Loader2,
   CheckCircle2,
   Clock,
   Sparkles,
@@ -35,10 +34,9 @@ export default function DasborAdminPage() {
     try {
       const now = new Date();
       const todayStr = now.toISOString().split("T")[0];
-      const monthPrefix = todayStr.slice(0, 7); // e.g. "2026-10"
+      const monthPrefix = todayStr.slice(0, 7);
       setCurrentMonthStr(monthPrefix);
 
-      // 1. Ambil janji status "selesai" untuk kunjungan hari ini & bulan ini (PRD 4.12)
       const qDone = query(
         collection(db, "janji_temu"),
         where("status", "==", "selesai")
@@ -56,7 +54,6 @@ export default function DasborAdminPage() {
       setTodayVisits(todayCount);
       setMonthVisits(monthCount);
 
-      // 2. Ambil janji berstatus "menunggu" (PRD 4.12)
       const qWait = query(
         collection(db, "janji_temu"),
         where("status", "==", "menunggu")
@@ -77,87 +74,89 @@ export default function DasborAdminPage() {
   return (
     <RouteGuard allowedRoles={["super_admin"]}>
       <AppLayout>
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-amber-700">Pusat Kendali Pemilik Klinik</span>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight mt-1">
-                Dasbor Super Admin (Bu Ratna) 👑
-              </h1>
-              <p className="text-xs text-slate-500 mt-1">
-                Ringkasan operasional Klinik Gigi Senyum Rekah secara menyeluruh.
-              </p>
+        <div className="space-y-6 max-w-5xl mx-auto">
+          {/* Hero Banner (Dantoa Dental Clinic Theme) */}
+          <div className="bg-gradient-to-r from-[#e9f7fb] via-[#f0f9ff] to-white rounded-3xl p-6 sm:p-8 border border-cyan-100 shadow-[0_2px_15px_rgba(0,180,216,0.06)] relative overflow-hidden">
+            <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white text-[#0891b2] text-[11px] font-extrabold uppercase tracking-wider shadow-xs border border-cyan-200">
+                  Panel Pemilik & Tata Kelola
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                  Dasbor Super Administrator
+                </h1>
+                <p className="text-slate-600 text-xs sm:text-sm font-medium max-w-md">
+                  Pengawasan operasional klinik, otorisasi staf & dokter, katalog tarif layanan, dan rekapitulasi data.
+                </p>
+              </div>
+
+              <Link
+                href="/admin/pengguna"
+                id="btn-kelola-pengguna"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#00c5de] to-[#06b6d4] hover:from-[#06b6d4] hover:to-[#0891b2] text-white text-xs font-extrabold uppercase tracking-wider shadow-md shadow-cyan-500/25 transition shrink-0 active:scale-95"
+              >
+                <Users className="w-4 h-4" />
+                <span>Kelola Pengguna</span>
+              </Link>
             </div>
-            <Link
-              href="/admin/pengguna"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0E7490] text-white text-xs font-semibold hover:bg-[#155E75] shadow-sm shrink-0"
-            >
-              <Users className="w-4 h-4" />
-              Kelola Pengguna & Peran
-            </Link>
           </div>
 
-          {/* Kartu Statistik Bab 4.12 */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {/* Kunjungan hari ini */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Kunjungan Hari Ini</span>
-                <span className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          {/* Metric Cards (Dantoa Dental Big Stats) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Kunjungan Hari Ini
+                </span>
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                   <CheckCircle2 className="w-5 h-5" />
-                </span>
+                </div>
               </div>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-slate-800 tabular-nums">
-                  {loading ? "..." : todayVisits}
-                </span>
-                <span className="text-xs text-slate-400">pasien selesai</span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-2">Dihitung dari janji berstatus selesai hari ini.</p>
+              <span className="text-3xl sm:text-4xl font-black text-slate-900 tabular-nums block">
+                {loading ? "..." : todayVisits}
+              </span>
+              <span className="text-xs text-slate-400 font-medium block mt-0.5">Pasien selesai ditangani</span>
             </div>
 
-            {/* Kunjungan bulan ini (klik membuka laporan) */}
             <Link
               href={`/admin/laporan?bulan=${currentMonthStr}`}
-              className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:border-[#0E7490] transition group"
+              id="card-kunjungan-bulan"
+              className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] p-6 hover:border-cyan-300 hover:shadow-md transition group block"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Kunjungan Bulan Ini</span>
-                <span className="w-9 h-9 rounded-xl bg-cyan-50 text-[#0E7490] flex items-center justify-center">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Kunjungan Bulan Ini ({currentMonthStr})
+                </span>
+                <div className="w-10 h-10 rounded-2xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <BarChart3 className="w-5 h-5" />
-                </span>
+                </div>
               </div>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-[#0E7490] tabular-nums">
-                  {loading ? "..." : monthVisits}
-                </span>
-                <span className="text-xs text-slate-400">pasien selesai</span>
-              </div>
-              <p className="text-[11px] text-[#0E7490] mt-2 group-hover:underline flex items-center gap-1 font-semibold">
-                Buka Laporan Bulan Berjalan ({currentMonthStr}) →
+              <span className="text-3xl sm:text-4xl font-black text-[#06b6d4] tabular-nums block">
+                {loading ? "..." : monthVisits}
+              </span>
+              <p className="text-xs text-[#06b6d4] mt-2 flex items-center gap-1 font-bold group-hover:underline">
+                Buka Rekapitulasi <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </p>
             </Link>
 
-            {/* Menunggu konfirmasi */}
             <Link
               href="/resepsionis/janji?status=menunggu"
-              className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:border-amber-400 transition group"
+              id="card-menunggu-admin"
+              className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] p-6 hover:border-amber-300 hover:shadow-md transition group block"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Menunggu Konfirmasi</span>
-                <span className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Menunggu Konfirmasi
+                </span>
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Clock className="w-5 h-5" />
-                </span>
+                </div>
               </div>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-amber-600 tabular-nums">
-                  {loading ? "..." : waitingConfirm}
-                </span>
-                <span className="text-xs text-slate-400">antrean permohonan</span>
-              </div>
-              <p className="text-[11px] text-[#0E7490] mt-2 group-hover:underline flex items-center gap-1 font-semibold">
-                Periksa di Kelola Janji →
+              <span className="text-3xl sm:text-4xl font-black text-amber-600 tabular-nums block">
+                {loading ? "..." : waitingConfirm}
+              </span>
+              <p className="text-xs text-[#06b6d4] mt-2 flex items-center gap-1 font-bold group-hover:underline">
+                Tinjau Antrean <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </p>
             </Link>
           </div>
@@ -166,38 +165,62 @@ export default function DasborAdminPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link
               href="/admin/pengguna"
-              className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-[#0E7490] transition group"
+              className="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] hover:border-cyan-300 hover:shadow-md transition-all group"
             >
-              <Users className="w-7 h-7 text-[#0E7490] mb-3" />
-              <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#0E7490]">Kelola Pengguna</h3>
-              <p className="text-xs text-slate-500 mt-1">Ubah peran staf, dokter, atau nonaktifkan akun.</p>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <Users className="w-6 h-6" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-sm group-hover:text-[#06b6d4] transition-colors">
+                Kelola Pengguna & Peran
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Ubah peran akun, tetapkan staf/dokter, dan atur status akses aktif.
+              </p>
             </Link>
 
             <Link
               href="/admin/layanan"
-              className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-[#0E7490] transition group"
+              className="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] hover:border-cyan-300 hover:shadow-md transition-all group"
             >
-              <ClipboardList className="w-7 h-7 text-[#0E7490] mb-3" />
-              <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#0E7490]">Katalog Layanan</h3>
-              <p className="text-xs text-slate-500 mt-1">Atur nama layanan, durasi (kelipatan 30m), dan tarif.</p>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <ClipboardList className="w-6 h-6" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-sm group-hover:text-[#06b6d4] transition-colors">
+                Katalog Layanan Medis
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Konfigurasi nama layanan, durasi (kelipatan 30m), dan tarif resmi.
+              </p>
             </Link>
 
             <Link
               href="/admin/jadwal-dokter"
-              className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-[#0E7490] transition group"
+              className="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] hover:border-cyan-300 hover:shadow-md transition-all group"
             >
-              <CalendarDays className="w-7 h-7 text-[#0E7490] mb-3" />
-              <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#0E7490]">Jadwal Dokter</h3>
-              <p className="text-xs text-slate-500 mt-1">Atur hari praktik (Senin-Sabtu) dan jam tugas dokter.</p>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <CalendarDays className="w-6 h-6" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-sm group-hover:text-[#06b6d4] transition-colors">
+                Jadwal Praktik Dokter
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Atur hari praktik operasional (Senin-Sabtu) dan jam tugas masing-masing dokter.
+              </p>
             </Link>
 
             <Link
               href="/admin/laporan"
-              className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:border-[#0E7490] transition group"
+              className="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,180,216,0.04)] hover:border-cyan-300 hover:shadow-md transition-all group"
             >
-              <BarChart3 className="w-7 h-7 text-[#0E7490] mb-3" />
-              <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#0E7490]">Laporan Kunjungan</h3>
-              <p className="text-xs text-slate-500 mt-1">Rekap data kunjungan selesai per dokter & per layanan.</p>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-50 text-[#06b6d4] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <BarChart3 className="w-6 h-6" />
+              </div>
+              <h3 className="font-extrabold text-slate-900 text-sm group-hover:text-[#06b6d4] transition-colors">
+                Laporan Kunjungan
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Rekapitulasi kunjungan selesai bulanan per dokter dan per layanan.
+              </p>
             </Link>
           </div>
         </div>
