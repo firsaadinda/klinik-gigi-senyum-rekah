@@ -77,13 +77,13 @@ Untuk menjaga privasi medis dan etika kedokteran, sistem memberlakukan batasan k
 
 ## 5. Akun Uji Resmi per Peran
 
-| Peran (Role) | Nama Akun | Email Login | Kata Sandi | Rute Masuk Default |
-| :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | Bu Ratna (Pemilik) | `ratna@senyumrekah.id` | `RatnaBoss#24` | `/admin` |
-| **Resepsionis** | Laras (Resepsionis) | `laras@senyumrekah.id` | `LarasFront@99` | `/resepsionis` |
-| **Dokter Praktik 1** | drg. Bima Pratama | `bima@senyumrekah.id` | `DrgBima#88` | `/dokter` |
-| **Dokter Praktik 2** | drg. Sinta Wijaya | `sinta@senyumrekah.id` | `DrgSinta%77` | `/dokter` |
-| **Pasien Mandiri** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | `/beranda` |
+| Peran (Role) | Nama Akun | Email Login | Kata Sandi | Pemenuhan Ketentuan Sandi (Kapital, Huruf Kecil, Angka, Simbol) | Rute Masuk Default |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Super Admin** | Bu Ratna (Pemilik) | `ratna@senyumrekah.id` | `RatnaBoss#24` | 12 Karakter: Kapital (`R`,`B`), Kecil (`atna`,`oss`), Simbol (`#`), Angka (`24`) — **Lolos 100%** | `/admin` |
+| **Resepsionis** | Laras (Resepsionis) | `laras@senyumrekah.id` | `LarasFront@99` | 13 Karakter: Kapital (`L`,`F`), Kecil (`aras`,`ront`), Simbol (`@`), Angka (`99`) — **Lolos 100%** | `/resepsionis` |
+| **Dokter Praktik 1** | drg. Bima Pratama | `bima@senyumrekah.id` | `DrgBima#88` | 10 Karakter: Kapital (`D`,`B`), Kecil (`rg`,`ima`), Simbol (`#`), Angka (`88`) — **Lolos 100%** | `/dokter` |
+| **Dokter Praktik 2** | drg. Sinta Wijaya | `sinta@senyumrekah.id` | `DrgSinta%77` | 11 Karakter: Kapital (`D`,`S`), Kecil (`rg`,`inta`), Simbol (`%`), Angka (`77`) — **Lolos 100%** | `/dokter` |
+| **Pasien Mandiri** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | 12 Karakter: Kapital (`A`,`S`), Kecil (`ndi`,`ehat`), Simbol (`&`), Angka (`26`) — **Lolos 100%** | `/beranda` |
 
 ---
 
