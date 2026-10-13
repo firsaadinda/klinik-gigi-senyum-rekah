@@ -83,7 +83,13 @@ Untuk menjaga privasi medis dan etika kedokteran, sistem memberlakukan batasan k
 | **Resepsionis** | Laras (Resepsionis) | `laras@senyumrekah.id` | `LarasFront@99` | 13 Karakter: Kapital (`L`,`F`), Kecil (`aras`,`ront`), Simbol (`@`), Angka (`99`) — **Lolos 100%** | `/resepsionis` |
 | **Dokter Praktik 1** | drg. Bima Pratama | `bima@senyumrekah.id` | `DrgBima#88` | 10 Karakter: Kapital (`D`,`B`), Kecil (`rg`,`ima`), Simbol (`#`), Angka (`88`) — **Lolos 100%** | `/dokter` |
 | **Dokter Praktik 2** | drg. Sinta Wijaya | `sinta@senyumrekah.id` | `DrgSinta%77` | 11 Karakter: Kapital (`D`,`S`), Kecil (`rg`,`inta`), Simbol (`%`), Angka (`77`) — **Lolos 100%** | `/dokter` |
-| **Pasien Mandiri** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | 12 Karakter: Kapital (`A`,`S`), Kecil (`ndi`,`ehat`), Simbol (`&`), Angka (`26`) — **Lolos 100%** | `/beranda` |
+| **Pasien 1** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | 12 Karakter: Kapital (`A`,`S`), Kecil (`ndi`,`ehat`), Simbol (`&`), Angka (`26`) — **Lolos 100%** | `/beranda` |
+| **Pasien 2** | Budi Santoso | `budi@senyumrekah.id` | `BudiGigi#31` | 11 Karakter: Kapital (`B`,`G`), Kecil (`udi`,`igi`), Simbol (`#`), Angka (`31`) — **Lolos 100%** | `/beranda` |
+| **Pasien 3** | Citra Lestari | `citra@senyumrekah.id` | `CitraSenyum@45` | 14 Karakter: Kapital (`C`,`S`), Kecil (`itra`,`enyum`), Simbol (`@`), Angka (`45`) — **Lolos 100%** | `/beranda` |
+| **Pasien 4** | Dewi Anggraini | `dewi@senyumrekah.id` | `DewiSehat%62` | 12 Karakter: Kapital (`D`,`S`), Kecil (`ewi`,`ehat`), Simbol (`%`), Angka (`62`) — **Lolos 100%** | `/beranda` |
+| **Pasien 5** | Eko Prasetyo | `eko@senyumrekah.id` | `EkoKlinik&73` | 12 Karakter: Kapital (`E`,`K`), Kecil (`ko`,`linik`), Simbol (`&`), Angka (`73`) — **Lolos 100%** | `/beranda` |
+| **Pasien 6** | Fani Rahmawati | `fani@senyumrekah.id` | `FaniCantik#84` | 13 Karakter: Kapital (`F`,`C`), Kecil (`ani`,`antik`), Simbol (`#`), Angka (`84`) — **Lolos 100%** | `/beranda` |
+| **Pasien 7** | Gilang Ramadhan | `gilang@senyumrekah.id` | `GilangPutih@95` | 14 Karakter: Kapital (`G`,`P`), Kecil (`ilang`,`utih`), Simbol (`@`), Angka (`95`) — **Lolos 100%** | `/beranda` |
 
 ---
 

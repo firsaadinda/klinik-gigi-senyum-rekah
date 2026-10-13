@@ -74,4 +74,10 @@ Dokumen ini berisi tabel skenario pengujian otorisasi, pengalihan, *route guard*
 | **Resepsionis** | Laras (Resepsionis) | `laras@senyumrekah.id` | `LarasFront@99` | `/resepsionis` |
 | **Dokter 1** | drg. Bima Pratama | `bima@senyumrekah.id` | `DrgBima#88` | `/dokter` |
 | **Dokter 2** | drg. Sinta Wijaya | `sinta@senyumrekah.id` | `DrgSinta%77` | `/dokter` |
-| **Pasien** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | `/beranda` |
+| **Pasien 1** | Andi Pratama | `andi@senyumrekah.id` | `AndiSehat&26` | `/beranda` |
+| **Pasien 2** | Budi Santoso | `budi@senyumrekah.id` | `BudiGigi#31` | `/beranda` |
+| **Pasien 3** | Citra Lestari | `citra@senyumrekah.id` | `CitraSenyum@45` | `/beranda` |
+| **Pasien 4** | Dewi Anggraini | `dewi@senyumrekah.id` | `DewiSehat%62` | `/beranda` |
+| **Pasien 5** | Eko Prasetyo | `eko@senyumrekah.id` | `EkoKlinik&73` | `/beranda` |
+| **Pasien 6** | Fani Rahmawati | `fani@senyumrekah.id` | `FaniCantik#84` | `/beranda` |
+| **Pasien 7** | Gilang Ramadhan | `gilang@senyumrekah.id` | `GilangPutih@95` | `/beranda` |
