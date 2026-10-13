@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { Mail, Lock, AlertCircle, Loader2, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, AlertCircle, Loader2, ArrowRight, Sparkles, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import Logo from "@/components/Logo";
 
 function MasukForm() {
@@ -15,6 +15,7 @@ function MasukForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -41,13 +42,16 @@ function MasukForm() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
+    const cleanedEmail = email.replace(/[\u200B-\u200D\uFEFF]/g, "").trim();
+    const cleanedPassword = password.replace(/[\u200B-\u200D\uFEFF]/g, "").trim();
+
+    if (!cleanedEmail || !cleanedPassword) {
       setError("Silakan lengkapi email dan kata sandi.");
       return;
     }
     setSubmitting(true);
     try {
-      const profile = await loginEmail(email, password);
+      const profile = await loginEmail(cleanedEmail, cleanedPassword);
       if (profile && profile.aktif === false) {
         setError("Akun Anda dinonaktifkan. Hubungi klinik.");
         setSubmitting(false);
@@ -229,13 +233,22 @@ function MasukForm() {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <input
                   id="login-password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 8 karakter kombinasi"
-                  className="w-full pl-11 pr-4 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-[#06b6d4] focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition font-medium text-slate-900"
+                  className="w-full pl-11 pr-11 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-[#06b6d4] focus:ring-4 focus:ring-cyan-500/10 focus:outline-none transition font-medium text-slate-900"
                 />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Sembunyikan kata sandi" : "Lihat kata sandi"}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 focus:outline-none transition"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
               <p className="text-[11px] text-slate-400">
                 Kombinasi huruf besar, huruf kecil, angka, dan simbol khusus (min. 8 karakter).

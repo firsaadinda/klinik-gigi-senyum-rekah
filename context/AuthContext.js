@@ -92,7 +92,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginEmail = async (email, password) => {
-    const cred = await signInWithEmailAndPassword(auth, email, password);
+    const cleanEmail = typeof email === "string" ? email.replace(/[\u200B-\u200D\uFEFF]/g, "").trim() : email;
+    const cleanPass = typeof password === "string" ? password.replace(/[\u200B-\u200D\uFEFF]/g, "").trim() : password;
+    const cred = await signInWithEmailAndPassword(auth, cleanEmail, cleanPass);
     const profile = await ensureUserDoc(cred.user);
     setUser(cred.user);
     setUserData(profile);
