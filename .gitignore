@@ -47,6 +47,7 @@ scripts/
 .vscode/
 *.docx
 *.html
+AGENTS.md
 
 /.netlify
 
